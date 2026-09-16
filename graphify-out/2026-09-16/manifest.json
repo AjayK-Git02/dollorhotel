@@ -1,0 +1,44 @@
+{
+  "AGENTS.md": {
+    "mtime": 1789071001.0652235,
+    "seen": 1789326219.4879467,
+    "ast_hash": "c50a9efe2bebb963a0841740f0905f07",
+    "semantic_hash": "c50a9efe2bebb963a0841740f0905f07"
+  },
+  "DESIGN.md": {
+    "mtime": 1789071001.0515058,
+    "seen": 1789326219.4879506,
+    "ast_hash": "53e51cc1488fee85236e2fea396892ca",
+    "semantic_hash": "53e51cc1488fee85236e2fea396892ca"
+  },
+  "OPEN-QUESTIONS.md": {
+    "mtime": 1789071001.0834863,
+    "seen": 1789326219.4879525,
+    "ast_hash": "080e6b8b2b2ee25e7c34457a92a32d8d",
+    "semantic_hash": "080e6b8b2b2ee25e7c34457a92a32d8d"
+  },
+  "PRD.md": {
+    "mtime": 1789071001.0694814,
+    "seen": 1789326219.4879534,
+    "ast_hash": "3835583a6a5b96b1f92db4fd8767cd61",
+    "semantic_hash": "3835583a6a5b96b1f92db4fd8767cd61"
+  },
+  "README.md": {
+    "mtime": 1789071001.060572,
+    "seen": 1789326219.4879541,
+    "ast_hash": "1fa6289383b779bf3176b71e0e134a11",
+    "semantic_hash": "1fa6289383b779bf3176b71e0e134a11"
+  },
+  "TASKS.md": {
+    "mtime": 1789071001.0794868,
+    "seen": 1789326219.487955,
+    "ast_hash": "413859a3f73f8ba15abaecc526c89ff2",
+    "semantic_hash": "413859a3f73f8ba15abaecc526c89ff2"
+  },
+  "TRD.md": {
+    "mtime": 1789071001.0734813,
+    "seen": 1789326219.4879563,
+    "ast_hash": "f176c989f267f9580ec607d0aef9aeb8",
+    "semantic_hash": "f176c989f267f9580ec607d0aef9aeb8"
+  }
+}
