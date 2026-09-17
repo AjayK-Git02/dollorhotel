@@ -14,6 +14,7 @@ CREATE TABLE public.staygo_settings (
   footer_email text NOT NULL DEFAULT 'support@staygo.com',
   footer_address text NOT NULL DEFAULT '45 Grandview Avenue, New York, NY 10001, USA',
   company_name text NOT NULL DEFAULT 'StayGo Inc.',
+  whatsapp_number text NOT NULL DEFAULT '+1234567890',
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );

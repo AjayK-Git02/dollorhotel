@@ -27,7 +27,7 @@ export default async function Home() {
   }
 
   // Fallback defaults matching exactly the provided HTML
-  const heroWatermark = settings?.hero_watermark || "StayGo";
+  const heroWatermark = settings?.company_name || "Dollar Hotel";
   const heroTitle = settings?.hero_title || "Find Your Perfect Stay\nat the Best Price";
   const heroBg = settings?.hero_bg_image || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2000&auto=format&fit=crop";
   const storyTitle = settings?.story_title || "Our Story";
@@ -214,7 +214,7 @@ export default async function Home() {
             ))}
           </div>
           <div className="faq-right fade-up">
-            <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=800&auto=format&fit=crop" alt="Luxury Pool" />
+            <img src={settings?.faq_image || "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=800&auto=format&fit=crop"} alt="FAQ Image" />
           </div>
         </section>
 

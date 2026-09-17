@@ -1,6 +1,7 @@
 import { supabase } from "@/utils/supabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import RoomGallery from "@/components/RoomGallery";
 
 // Demo data fallback for testing without DB
 const DEMO_ROOMS: Record<string, any> = {
@@ -81,17 +82,8 @@ export default async function RoomPage(props: { params: Promise<{ id: string }> 
                 <p>{room.description || "Experience the ultimate comfort and luxury in this beautifully appointed room."}</p>
               </div>
 
-              {/* Gallery */}
-              {room.gallery && room.gallery.length > 0 && (
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-6">More Photos</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    {room.gallery.map((img: string, idx: number) => (
-                      <img key={idx} src={img} alt={`${room.title} view ${idx + 1}`} className="w-full h-48 object-cover rounded-xl" />
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Interactive Gallery */}
+              <RoomGallery images={room.gallery} title={room.title} />
             </div>
 
             {/* Right Sidebar (Pricing & Booking) */}

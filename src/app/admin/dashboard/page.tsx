@@ -10,20 +10,16 @@ export default function AdminDashboard() {
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState<any>({});
   const [message, setMessage] = useState('');
+  
+  // File upload state
+  const [heroBgFile, setHeroBgFile] = useState<File | null>(null);
+  const [faqBgFile, setFaqBgFile] = useState<File | null>(null);
+
   const router = useRouter();
 
   useEffect(() => {
-    checkUser();
     loadSettings();
   }, []);
-
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      // In dev mode without auth, you can comment this out or bypass
-      // router.push('/admin');
-    }
-  };
 
   const loadSettings = async () => {
     const { data } = await (supabase as any).from('staygo_settings').select('*').single();
@@ -33,49 +29,85 @@ export default function AdminDashboard() {
     setLoading(false);
   };
 
+  const uploadFileToSupabase = async (file: File) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+    
+    const { error } = await supabase.storage.from('staygo-images').upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+    
+    if (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+
+    const { data } = supabase.storage.from('staygo-images').getPublicUrl(fileName);
+    return data.publicUrl;
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setMessage('');
 
-    const { error } = await (supabase as any)
-      .from('staygo_settings')
-      .update(settings)
-      .eq('id', settings.id);
+    try {
+      let finalSettings = { ...settings };
 
-    if (error) {
-      setMessage('Error saving settings.');
+      if (heroBgFile) {
+        setMessage('Uploading image...');
+        const newUrl = await uploadFileToSupabase(heroBgFile);
+        finalSettings.hero_bg_image = newUrl;
+        setHeroBgFile(null);
+      }
+
+      if (faqBgFile) {
+        setMessage('Uploading FAQ image...');
+        const newUrl = await uploadFileToSupabase(faqBgFile);
+        finalSettings.faq_image = newUrl;
+        setFaqBgFile(null);
+      }
+
+      const { error } = await (supabase as any)
+        .from('staygo_settings')
+        .update(finalSettings)
+        .eq('id', finalSettings.id);
+
+      if (error) {
+        setMessage('Error saving settings.');
+        console.error(error);
+      } else {
+        setMessage('Settings saved successfully!');
+        setSettings(finalSettings);
+      }
+    } catch (error) {
+      setMessage('Error saving or uploading.');
       console.error(error);
-    } else {
-      setMessage('Settings saved successfully!');
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/admin');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSettings({ ...settings, [e.target.name]: e.target.value });
   };
 
-  if (loading) return <div className="min-h-screen bg-[#111827] flex items-center justify-center text-[#ea580c]">Loading StayGo Admin...</div>;
+  if (loading) return <div className="min-h-screen bg-[#111827] flex items-center justify-center text-[#ea580c]">Loading Admin Panel...</div>;
 
   return (
     <div className="min-h-screen bg-gray-50 text-[#111827] flex">
       {/* Sidebar */}
       <div className="w-64 bg-[#111827] text-white p-6 flex flex-col">
-        <h2 className="text-2xl font-bold text-[#ea580c] mb-8">StayGo Admin</h2>
+        <h2 className="text-2xl font-bold text-[#ea580c] mb-8">{settings?.company_name || 'Admin Panel'}</h2>
         <nav className="flex-1 space-y-4">
           <Link href="/admin/dashboard" className="block text-white font-medium bg-white/10 px-4 py-2 rounded-lg">Global Settings</Link>
           <Link href="/admin/dashboard/rooms" className="block text-gray-400 hover:text-white px-4 py-2">Rooms & Offers</Link>
           <Link href="/admin/dashboard/faqs" className="block text-gray-400 hover:text-white px-4 py-2">FAQs</Link>
+          <div className="pt-8 mt-8 border-t border-gray-800">
+            <button onClick={() => supabase.auth.signOut()} className="block w-full text-left text-gray-400 hover:text-[#ea580c] px-4 py-2">Logout</button>
+          </div>
         </nav>
-        <button onClick={handleLogout} className="text-sm text-gray-400 hover:text-white mt-auto text-left">
-          Sign Out
-        </button>
       </div>
 
       {/* Main Content */}
@@ -102,8 +134,29 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Hero Background Image URL</label>
-              <input type="text" name="hero_bg_image" value={settings.hero_bg_image || ''} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-gray-900 p-3 rounded-lg outline-none focus:border-[#ea580c]" />
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Hero Background Image</label>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={(e) => setHeroBgFile(e.target.files?.[0] || null)} 
+                className="w-full bg-gray-50 border border-gray-200 p-3 rounded-lg outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer" 
+              />
+              {settings.hero_bg_image && !heroBgFile && (
+                <p className="text-xs text-gray-500 mt-2">Currently uploaded: <a href={settings.hero_bg_image} target="_blank" className="text-orange-600 hover:underline">View Image</a></p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">FAQ Section Image</label>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={(e) => setFaqBgFile(e.target.files?.[0] || null)} 
+                className="w-full bg-gray-50 border border-gray-200 p-3 rounded-lg outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer" 
+              />
+              {settings.faq_image && !faqBgFile && (
+                <p className="text-xs text-gray-500 mt-2">Currently uploaded: <a href={settings.faq_image} target="_blank" className="text-orange-600 hover:underline">View Image</a></p>
+              )}
             </div>
 
             <hr className="border-gray-100" />
@@ -142,12 +195,17 @@ export default function AdminDashboard() {
               <input type="text" name="footer_address" value={settings.footer_address || ''} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-gray-900 p-3 rounded-lg outline-none focus:border-[#ea580c]" />
             </div>
 
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">WhatsApp Number (For Book Now / Chat)</label>
+              <input type="text" name="whatsapp_number" value={settings.whatsapp_number || ''} onChange={handleChange} placeholder="e.g. 1234567890" className="w-full bg-gray-50 border border-gray-200 text-gray-900 p-3 rounded-lg outline-none focus:border-[#ea580c]" />
+            </div>
+
             <button 
               type="submit" 
               disabled={saving}
               className="mt-6 bg-[#ea580c] text-white font-semibold py-3 px-8 rounded-full hover:bg-orange-700 transition-colors disabled:opacity-50"
             >
-              {saving ? 'Saving...' : 'Save Settings'}
+              {saving ? 'Uploading & Saving...' : 'Save Settings'}
             </button>
           </form>
         </div>
