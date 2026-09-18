@@ -1,5 +1,6 @@
 import { supabase } from "@/utils/supabase";
 import { StayGoAnimations } from "@/components/StayGoAnimations";
+import AutoSlider from "@/components/AutoSlider";
 import Link from "next/link";
 
 export const revalidate = 0;
@@ -138,52 +139,7 @@ export default async function Home() {
           <div className="slider-header fade-up">
             <h2>Discover Your<br />Ideal Room</h2>
           </div>
-          <div className="slider-container fade-up">
-            <div className="slider-track">
-              {/* Original Items */}
-              {sliderData.map((item: any, idx: number) => (
-                <Link href={`/room/${item.id}`} key={`slide-${idx}`}>
-                  <div className="slide-card cursor-pointer">
-                    <img src={item.image_url || item.main_image} alt={item.title} />
-                    <div className="slide-info">
-                      <div>
-                        <h4>{item.title}</h4>
-                        <p>{item.location}</p>
-                      </div>
-                      <span className="slide-price">
-                        {item.has_offer ? (
-                          <span className="text-orange-600 font-bold">{item.offer_price} <span className="line-through text-gray-400 text-sm">{item.base_price}</span></span>
-                        ) : (
-                          item.base_price || item.price
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-              {/* Duplicated for infinite loop */}
-              {sliderData.map((item: any, idx: number) => (
-                <Link href={`/room/${item.id}`} key={`slide-dup-${idx}`}>
-                  <div className="slide-card cursor-pointer">
-                    <img src={item.image_url || item.main_image} alt={item.title} />
-                    <div className="slide-info">
-                      <div>
-                        <h4>{item.title}</h4>
-                        <p>{item.location}</p>
-                      </div>
-                      <span className="slide-price">
-                        {item.has_offer ? (
-                          <span className="text-orange-600 font-bold">{item.offer_price} <span className="line-through text-gray-400 text-sm">{item.base_price}</span></span>
-                        ) : (
-                          item.base_price || item.price
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
+          <AutoSlider sliderData={sliderData} />
         </section>
 
         {/* 5 & 6. TRUSTED STAYS, COMMUNITY & TESTIMONIAL (Image 2) */}
