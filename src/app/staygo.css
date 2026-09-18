@@ -227,9 +227,10 @@ body { background-color: #000; color: var(--text-main); overflow-x: hidden; marg
 @media (max-width: 768px) {
     /* Navbar */
     .staygo-nav { padding: 15px 5%; }
-    .staygo-nav-links { display: none; /* Hide text links on mobile */ }
-    .staygo-wa-btn { padding: 10px 16px; font-size: 14px; }
-    .staygo-wa-btn svg { width: 18px; height: 18px; }
+    .staygo-nav-links { display: flex; gap: 15px; }
+    .staygo-nav-links a { font-size: 13px; }
+    .staygo-wa-btn { padding: 8px 14px; font-size: 13px; }
+    .staygo-wa-btn svg { width: 16px; height: 16px; }
 
     /* Layout & Padding */
     .staygo-section { padding: 60px 5%; }
