@@ -1,6 +1,8 @@
 import { supabase } from "@/utils/supabase";
 import Link from "next/link";
 
+export const revalidate = 0;
+
 export default async function OffersPage() {
   let rooms: any[] = [];
 

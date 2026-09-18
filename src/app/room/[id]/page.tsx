@@ -13,6 +13,8 @@ const DEMO_ROOMS: Record<string, any> = {
   "demo-6": { title: "Pinecone Lodge", location: "Lake Tahoe, CA", base_price: "$85,000", main_image: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=600&auto=format&fit=crop" }
 };
 
+export const revalidate = 0;
+
 export default async function RoomPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
